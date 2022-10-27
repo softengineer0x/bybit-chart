@@ -66,6 +66,13 @@ export default {
         Object.entries(data).forEach(([key, value]) => {
           if (this.symbols.includes(key)) {
             this.priceData.set(key, value);
+            if (key === this.symbol && value.candle) {
+              let data = [];
+              Object.values(value.candle).map(el => {
+                data.push([el.time * 1000, el.open, el.high, el.low, el.close])
+              })
+              this.chartOptions.series[0].data = data.slice().reverse()
+            }
           }
         })
         // console.log(this.priceData)
@@ -77,7 +84,6 @@ export default {
       if (this.priceData.get(this.symbol) && this.priceData.get(this.symbol)?.candle) {
         let data = []
         Object.values(this.priceData.get(this.symbol).candle).map(el => {
-          console.log(el.time, el.open, el.high, el.low, el.close)
           data.push([el.time * 1000, el.open, el.high, el.low, el.close])
         })
         this.chartOptions.series[0].data = data.slice().reverse()
