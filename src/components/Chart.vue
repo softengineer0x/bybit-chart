@@ -46,7 +46,19 @@ export default {
         series: [{
           type: 'candlestick',
           name: 'Bybit Price',
-          data: initData,
+          data: initData
+        },{
+          type: 'line',
+          name: 'Max',
+          data: []
+        },{
+          type: 'line',
+          name: 'Mid',
+          data: []
+        },{
+          type: 'line',
+          name: 'Min',
+          data: []
         }]
       }
     }
@@ -67,11 +79,15 @@ export default {
           if (this.symbols.includes(key)) {
             this.priceData.set(key, value);
             if (key === this.symbol && value.candle) {
-              let data = [];
+              let data = [], maxData = [], midData = [], minData = [];
               Object.values(value.candle).map(el => {
                 data.push([el.time * 1000, el.open, el.high, el.low, el.close])
+                maxData.push([el.time * 1000, value.calc.max])
+                midData.push([el.time * 1000, value.calc.mid])
+                minData.push([el.time * 1000, value.calc.min])
               })
               this.chartOptions.series[0].data = data.slice().reverse()
+              this.chartOptions.series[1].data = maxData.slice().reverse()
             }
           }
         })
@@ -82,11 +98,17 @@ export default {
       this.symbol = ev.target.value
       console.log(this.symbol, this.priceData.get(this.symbol).candle[1])
       if (this.priceData.get(this.symbol) && this.priceData.get(this.symbol)?.candle) {
-        let data = []
+        let data = [], maxData = [], midData = [], minData = []
         Object.values(this.priceData.get(this.symbol).candle).map(el => {
           data.push([el.time * 1000, el.open, el.high, el.low, el.close])
+          maxData.push([el.time * 1000, this.priceData.get(this.symbol).calc.max])
+          midData.push([el.time * 1000, this.priceData.get(this.symbol).calc.mid])
+          minData.push([el.time * 1000, this.priceData.get(this.symbol).calc.min])
         })
         this.chartOptions.series[0].data = data.slice().reverse()
+        this.chartOptions.series[1].data = maxData.slice().reverse()
+        this.chartOptions.series[2].data = midData.slice().reverse()
+        this.chartOptions.series[3].data = minData.slice().reverse()
         this.chartOptions.title.text = `${this.symbol} Price`
         this.chartOptions.series[0].name = `${this.symbol} Price`
       }
