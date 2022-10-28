@@ -88,6 +88,8 @@ export default {
               })
               this.chartOptions.series[0].data = data.slice().reverse()
               this.chartOptions.series[1].data = maxData.slice().reverse()
+              this.chartOptions.series[2].data = midData.slice().reverse()
+              this.chartOptions.series[3].data = minData.slice().reverse()
             }
           }
         })
